@@ -1,5 +1,6 @@
 # import necessary lib
 import requests
+from cachetools import TTLCache, cached
 
 from config.logger import logger
 from config.settings import settings
@@ -15,7 +16,11 @@ symbol_arrays = [
     {"name": "Platinum", "symbol": "XPT"},
 ]
 
+price_cache = TTLCache(maxsize=50, ttl=300)
 
+
+# Dùng Decorator @cached để gắn bộ nhớ đệm này vào hàm
+@cached(price_cache)
 def get_price(symbol: str):
     # Check symbol is available
     logger.info(f"Đang gọi API lấy giá cho mã: {symbol}")
